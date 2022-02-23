@@ -2,6 +2,7 @@ import sys
 import time
 import pygame
 from A_star import AStar
+from dijskstra import Dijsktra
 from settings import *
 
 class Aplication:
@@ -17,6 +18,7 @@ class Aplication:
         draw_mode = 'wall'
         ready = True
         first = True
+        pause = False
         i = 0
         while self.isRunning:
             for event in pygame.event.get():
@@ -33,15 +35,17 @@ class Aplication:
                     if event.key == pygame.K_d:
                         draw_mode = 'erase'
                     if event.key == pygame.K_SPACE:
+                        print('polleta')
                         ready = False
-                    if event.key == pygame.K_p and ready == False:
-                        ready = not ready
+                    if event.key == pygame.K_p:
+                        pause = not pause
                     if event.key == pygame.K_r and win == True:
                         self.grid = Grid()
                         win = False
                         first = True
                 elif event.type == pygame.MOUSEWHEEL:
-                    self.grid.update_grid()
+                    pass
+                    # self.grid.update_grid()
                 #     global SQUARE
                 #     print(event.y)
                 #     SQUARE = SQUARE + event.y * 5
@@ -55,21 +59,24 @@ class Aplication:
                 self.screen.fill(grey)
             
             else:
-                if self.grid.end == None or self.grid.start == None:
-                    ready = True
-                    continue
-                elif first:
-                    self.solver = AStar(self.grid)
-                    first = False
-                i += 1
-                win = self.solver.run()
-                time.sleep(0.01)
-                if win == True:
-                    ready = True
-                    if len(self.solver.path) == 0:
-                        print('Non traceable path')
-                    else:
-                        self.grid.display_path(self.solver.path)
+                if pause:
+                    pass
+                else:
+                    if self.grid.end == None or self.grid.start == None:
+                        ready = True
+                        continue
+                    elif first:
+                        self.solver = AStar(self.grid)
+                        first = False
+                    
+                    win = self.solver.run()
+                    time.sleep(0.01)
+                    if win == True:
+                        ready = True
+                        if len(self.solver.path) == 0:
+                            print('Non traceable path')
+                        else:
+                            self.grid.display_path(self.solver.path)
 
 
             self.grid.draw_grid()
@@ -77,10 +84,10 @@ class Aplication:
             pygame.display.update()
 
     def draw_cover(self):
-        for i in range(0, WIDTH, SQUARE):
-            pygame.draw.line(self.screen, black, (i, 0), (i, HEIGTH), 1)
-        for j in range(0, HEIGTH, SQUARE):
-            pygame.draw.line(self.screen, black, (0, j), (WIDTH, j), 1)
+        for i in range(0, HEIGTH, SQUARE):
+            pygame.draw.line(self.screen, black, (i, 0), (i, WIDTH), 1)
+        for j in range(0, WIDTH, SQUARE):
+            pygame.draw.line(self.screen, black, (0, j), (HEIGTH, j), 1)
 
 class Grid:
     def __init__(self):
@@ -142,11 +149,6 @@ class Grid:
     def display_path(self, path):
         for node in path:
             self.cell_state[node] = 2
-
-# class Film:
-#     def __init__(self, screen):
-#         pygame.camera.init()
-#         self.cam = pygame.camera.Camera('/dev/video', )
 
 
 if __name__ == '__main__':

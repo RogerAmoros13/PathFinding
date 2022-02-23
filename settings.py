@@ -1,4 +1,4 @@
-WIDTH, HEIGTH = 600, 600
+HEIGTH, WIDTH = 1400, 1000
 
 black = (0, 0, 0)
 grey = (211,211,211)
