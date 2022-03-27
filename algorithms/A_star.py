@@ -1,6 +1,6 @@
 import numpy as np
 from settings import *
-from node import Node
+from algorithms.node import Node
 
 class Node_A(Node):
     def __init__(self, pos=None, parent=None):
@@ -45,7 +45,7 @@ class AStar:
             pos_x = current_node.pos[0] + SQUARE * new_position[0]
             pos_y = current_node.pos[1] + SQUARE * new_position[1]
             new_pos = (pos_x, pos_y)
-            if pos_x < 0 or pos_y < 0 or pos_x >= WIDTH or pos_y >= HEIGTH:
+            if pos_x < 0 or pos_y < HEADER or pos_x >= WIDTH or pos_y >= HEIGTH:
                 continue
             if self.grid.cell_state[(pos_x, pos_y)] == 1:
                 continue
@@ -75,3 +75,12 @@ class AStar:
             self.grid.cell_state[node.pos] = 4
         self.grid.cell_state[current_node.pos] = 5
         return False
+
+    def stop(self):
+        self.openList = []
+        self.closedList = []
+        self.openList.append(self.start)
+        for i in range(0, HEIGTH, SQUARE):
+            for j in range(HEADER, WIDTH, SQUARE):
+                if self.grid.cell_state[(i,j)] != 1:
+                    self.grid.cell_state[(i,j)] = 0
