@@ -1,7 +1,5 @@
-from platform import node
 from settings import *
-from node import Node
-import numpy as np
+from algorithms.node import Node
 
 class Node_D(Node):
     def __init__(self, pos=None, parent=None):
@@ -31,6 +29,7 @@ class Dijsktra:
                 if (i, j) == grid.start:
                     node.dist = 0
                     self.cueList.append(node)
+                    self.start = node
                 self.nodeList.append(node)
         self.end = Node_D(self.grid.end)
         self.path = []
@@ -58,7 +57,7 @@ class Dijsktra:
         adjacent_list = []
         for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:
             new_pos = (current_node.pos[0] + SQUARE * new_position[0], current_node.pos[1] + SQUARE * new_position[1])
-            if new_pos[0] < 0 or new_pos[1] < 0 or new_pos[0] >= WIDTH or new_pos[1] >= HEIGTH:
+            if new_pos[0] < 0 or new_pos[1] < HEADER or new_pos[0] >= HEIGTH or new_pos[1] >= WIDTH:
                 continue
             if self.grid.cell_state[new_pos] == 1:
                 continue
@@ -67,10 +66,7 @@ class Dijsktra:
                 if node.pos == new_pos:
                     adjacent_list.append(node)
         for adjacent in adjacent_list:
-            # print(adjacent.visited)
-            if adjacent.visited:
-                pass
-            else:
+            if not adjacent.visited:
                 if adjacent.dist == -1 or adjacent.dist > current_node.dist + 1:
                     if adjacent.dist == -1:
                         adjacent.dist = 1
@@ -93,4 +89,11 @@ class Dijsktra:
         #         print('recontrarepolla')
         
         return False
-            
+    
+    def stop(self):
+        self.openList = []
+        self.openList.append(self.start)
+        # for i in range(0, HEIGTH, SQUARE):
+        #     for j in range(HEADER, WIDTH, SQUARE):
+        #         if self.grid[(i,j)] != 1:
+        #             self.grid[(i,j)] = 0
